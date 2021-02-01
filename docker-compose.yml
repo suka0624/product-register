@@ -1,0 +1,31 @@
+version: '3'
+
+volumes:
+  db-data:
+
+services:
+  web:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      # 相対パスで指定(githubに上げて別の人が使うかもしれないので)
+      - '.:/product-register'
+    environment: 
+      - 'DATABASE_PASSWORD=postgres'
+    # -itのt
+    tty: true
+    # -itのi
+    stdin_open: true
+    depends_on: 
+      - db
+    links:
+      - db
+  
+  db:
+    image: postgres
+    volumes: 
+      - 'db-data:/var/lib/postgresql/data'
+    environment: 
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_PASSWORD=postgres'
